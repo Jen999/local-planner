@@ -1,0 +1,92 @@
+# # Parameters to be loaded into rtabmap.launch
+
+
+################################### RTABMAP CORE MODULE ###################################
+
+rtabmap:
+
+  #  Sensor Input Parameters 
+  frame_id: robot_footprint
+  subscribe_depth: false        
+  subscribe_rgbd: false
+
+  # Output Params
+  queue_size: 30                    # Increase if topics frequencies are different
+  Mem/BinDataKept: true              # Whether to store depth cloud from RGBD Camera, useful for debugging (Turn off to up FPS) 
+
+  # 3D Map vs 2D Map
+  Grid/RayTracing: true              # done for each occupied cell, filling unknown space between the sensor and occupied cells. 
+  Grid/NormalsSegmentation: false    # Simple ground segmentation for 2D localization (NOTE: For outdoors, set NormalsSegmentation = True)
+  Grid/MaxGroundHeight: 0.4          # (m) Everything below xx is Ground 
+  Grid/MaxObstacleHeight: 1.0        # (m) Everything below xx is Obstacle [0 to ignore] - (1.0m to remove ceiling in office)
+  Grid/RangeMax: 30                 # (m) Max Range of Laserscan to add to Map 
+  Grid/CellSize: 0.05                # (m) Resolution of Map
+  Grid/PreVoxelFiltering: true      # Whether to turn on voxel filter on input cloud (NOTE: Might be done on perception module)
+  Grid/FootprintLength: 1.5         # Pointcloud within Robot's Length to filter (around base_link)
+  Grid/FootprintWidth: 1.2          # Pointcloud within Robot's Width to filter  (around base_link)
+  
+  # Rate (Hz) at which new nodes are added to map
+  Rtabmap/DetectionRate: 1
+
+  # RTAB-Map's parameters
+  RGBD/NeighborLinkRefining: true    # Correct odometry using the input lidar topic using ICP
+  RGBD/ProximityBySpace: true        # Find local loop closures based on the robot position in the map. 
+  RGBD/AngularUpdate: 0.1            # Min magnitude before rtabmap update (Angular)
+  RGBD/LinearUpdate: 0.1             # Min magnitude before rtabmap update (Linear)
+  RGBD/OptimizeFromGraphEnd: false   # FALSE: on loop closures the graph will be optimized from the first pose in the map
+  RGBD/ProximityPathMaxNeighbors: 10 # Use 10 if Reg/Strategy is using ICP
+  Grid/FromDepth: false              # FALSE: the occupancy grid is created from the laser scans (rather than RGBD Cam's pointcloud)
+  Reg/Force3DoF: false                # roll, pitch and z won't be estimated.
+  Reg/Strategy: 1                    # 0=Visual, 1=ICP, 2=Visual+ICP
+  Mem/NotLinkedNodesKept: true       # Keep not linked nodes in db (rehearsed nodes and deleted nodes).
+  RGBD/SavedLocalizationIgnored: true # Don't always initialize at last location of previous session
+
+  # Graph Optimizer (during loop closure)
+  Optimizer/Strategy: 2              # 0=TORO, 1=g2o, 2=GTSAM and 3=Ceres
+  Optimizer/Robust: false            # If True, Robust graph optimization using Vertigo
+  RGBD/OptimizeMaxError: 6           # Reject loop closures if optimization error ratio is greater than this value (0=disabled)
+
+  # 0=SURF 1=SIFT 2=ORB 3=FAST/FREAK 4=FAST/BRIEF 5=GFTT/FREAK 6=GFTT/BRIEF 7=BRISK 8=GFTT/ORB 9=KAZE 
+  Kp/DetectorStrategy: 2             # KEYPOINT DETECTOR
+  Vis/FeatureType: 2                 # KEYPOINT DESCRIPTOR (Features)
+  Kp/MaxFeatures: 500                # (Default: 500) Maximum features extracted from the images (0 means not bounded, <0 means no extraction)
+  Vis/MinInliers: 15                 # Minimum visual inliers to accept loop closure
+  Kp/MaxDepth: 4.0                   # Max depth for keypoints stored as vocabulary (m)
+  Vis/MaxDepth: 4.0                  # Max depth for features stored as vocabulary (m)
+  Kp/MinDepth: 0.5                   # Min depth for keypoints stored as vocabulary (m)
+  Vis/MinDepth: 0.5                  # Min depth for features stored as vocabulary (m)
+
+  # ICP parameters
+  Icp/VoxelSize: 0.05                # (DEFAULT: 0.0)  How much to downsample pointcloud / laserscan
+  Icp/MaxCorrespondenceDistance: 0.5  # (DEFAULT: 0.1)  Max distance for point correspondences
+  Icp/MaxTranslation: 0.5            # (DEFAULT: 0.2)  Maximum ICP translation correction accepted (m)
+  Icp/MaxRotation: 2                 # (DEFAULT: 0.78) Maximum ICP rotation correction accepted (rad)
+  Icp/Iterations: 30                 # (DEFAULT: 30)   Number of iterations ICP will attempt to converge to solution
+  Icp/PM: true                       # (DEFAULT: true) Use libpointmatcher for ICP registration instead of PCL's implementation
+  Icp/PMOutlierRatio: 0.6            # (DEFAULT: 0.95) TrimmedDistOutlierFilter/ratio
+  Icp/PMMatcherKnn: 3                # (DEFAULT: 1)    Number of nearest neighbors to consider it the reference
+  Icp/PMMatcherEpsilon: 1            # (DEFAULT: 0.0)  Approximation to use for the nearest-neighbor search
+  Icp/CorrespondenceRatio: 0.1       # (DEFAULT: 0.1)  Ratio of matching correspondences to accept the transform
+  Icp/Epsilon: 0.00001               # (DEFAULT: 0.00001) Set the transformation epsilon (maximum allowable difference between two consecutive transformations) in order for an optimization to be considered as having converged to the final solution
+  Icp/PointToPlaneK: 5               # (DEFALT: TRUE)  Use point to plane ICP
+  Icp/PointToPlaneRadius: 1.0        # (DEFAULT: 1.0)  Search radius to compute normals for point to plane if the cloud doesn't have already normals
+
+  # Not sure if needed
+  Odom/ScanKeyFrameThr: 0.8          # (DEFAULT: 0.9)  Create a new keyframe when the number of ICP inliers drops under this ratio of points in last frame's scan
+  OdomF2M/ScanMaxSize: 10000         # (DEFAULT: 2000)  Maximum local scan map size
+  OdomF2M/ScanSubtractRadius: 0.05   # (DEFAULT: 0.2)  Radius used to filter points of a new added scan to local map. This could match the voxel size of the scans
+
+
+
+####### NOTE: OBSTACLE CLUSTERING NODE SHIFTED TO lidar_driver launch file in Percep folder! ##########
+
+##### FOR REFERENCE #####
+
+#TEST PARAMETER TO SOLVE PACKET LOSS / EXTRAPOLATE INTO PAST/FUTURE ISSUE
+#wait_for_transform_duration: 0.2   # Increase timeout when transform is not received by rtabmap (default 0.2)
+#odom_sensor_sync: true
+
+# Maximum time allowed for map update (ms) (0 means infinity). When map update time exceeds this fixed time threshold
+# some nodes in Working Memory (WM) are transferred to Long-Term Memory to limit the size of the WM and decrease the update time.
+# If at Detection Rate of 1Hz, and rtabmap localization timestep is 900ms, that means CPU is loaded at 90%.
+#  Rtabmap/TimeThr: 950

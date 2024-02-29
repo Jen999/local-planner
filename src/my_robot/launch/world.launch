@@ -1,0 +1,134 @@
+<launch>
+
+  <!-- Robot pose -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+  <arg name="vehicleHeight" default="0.75"/>
+  <arg name="cameraOffsetZ" default="0"/>
+  <arg name="terrainZ" default="0"/>
+  <arg name="vehicleYaw" default="0"/>
+  <arg name="gazebo_gui" default="true"/>
+  <arg name="checkTerrainConn" default="true"/>
+  <arg name="database_path"     default="rtabmap.db"/>
+  <arg name="rgb_topic"   default="/camera/rgb/image"/>
+  <arg name="depth_topic" default="/camera/depth/image_raw"/>
+  <arg name="camera_info_topic" default="/camera/rgb/camera_info"/> 
+
+  <!-- Load Configurable Params for different robot configuration -->
+  <arg name="rtabmap_slam_param_config_relative_path"   default="config/rtabmap/indoor_template.yaml"/>
+  <rosparam file="$(find my_robot)/$(arg rtabmap_slam_param_config_relative_path)"     command="load"         ns="rtabmap"/>
+
+
+  <!-- Launch other relevant files-->
+  <include file="$(find my_robot)/launch/robot_description.launch"/>
+
+  <!-- World File -->
+  <arg name="world_file" default="$(find my_robot)/worlds/myworld.world"/>
+
+  <!-- Launch Gazebo World -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="$(arg gazebo_gui)" />
+    <arg name="world_name" value="$(arg world_file)"/>
+  </include>
+
+  <!-- <param name="camera_description" command="$(find xacro)/xacro inorder '$(find vehicle_simulator)/urdf/camera.urdf.xacro'" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_camera" args="-urdf -param /camera_description -model camera"/>
+
+  <param name="lidar_description" command="$(find xacro)/xacro inorder '$(find vehicle_simulator)/urdf/lidar.urdf.xacro'" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_lidar" args="-urdf -param /lidar_description -model lidar"/> -->
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find vehicle_simulator)/urdf/robot.urdf.xacro'" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_robot" args="-urdf -param /robot_description -model robot"/>
+
+
+  <!--launch rviz-->
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false"/>
+
+  <!-- Local Planner -->
+  <include file="$(find local_planner)/launch/local_planner.launch" >
+    <arg name="cameraOffsetZ" value="$(arg cameraOffsetZ)"/>
+    <arg name="goalX" value="$(arg x)"/>
+    <arg name="goalY" value="$(arg y)"/>
+  </include>
+
+  <include file="$(find terrain_analysis)/launch/terrain_analysis.launch" />
+
+  <include file="$(find terrain_analysis_ext)/launch/terrain_analysis_ext.launch" >
+    <arg name="checkTerrainConn" value="$(arg checkTerrainConn)"/>
+  </include>
+
+  <include file="$(find vehicle_simulator)/launch/vehicle_simulator.launch" >
+    <arg name="world_name" value="$(arg world_file)"/>
+    <arg name="vehicleHeight" value="$(arg vehicleHeight)"/>
+    <arg name="cameraOffsetZ" value="$(arg cameraOffsetZ)"/>
+    <arg name="vehicleX" value="$(arg x)"/>
+    <arg name="vehicleY" value="$(arg x)"/>
+    <arg name="terrainZ" value="$(arg z)"/>
+    <arg name="vehicleYaw" value="$(arg vehicleYaw)"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
+  </include>
+
+  <include file="$(find sensor_scan_generation)/launch/sensor_scan_generation.launch" />
+  
+  <node launch-prefix="nice" pkg="rviz" type="rviz" name="rvizGA" args="-d $(find vehicle_simulator)/rviz/vehicle_simulator.rviz" respawn="true"/>
+
+  <!--RTAB Map-->
+  <group ns="rtabmap">
+    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start">
+
+      <!-- Basic RTAB-Map Parameters -->
+      <param name="database_path"       type="string" value="$(arg database_path)"/>
+      <param name="frame_id"            type="string" value="robot_footprint"/>
+      <param name="odom_frame_id"       type="string" value="odom"/>
+      <param name="subscribe_depth"     type="bool"   value="false"/>
+      <param name="subscribe_scan_cloud"  type="bool" value="true"/>
+      <param name="approx_sync" type="bool" value="true"/>
+
+      <!-- RTAB-Map Inputs -->
+      <remap from="scan_cloud" to="/velodyne_points"/>
+      <remap from="rgb/image" to="$(arg rgb_topic)"/>
+      <remap from="depth/image" to="$(arg depth_topic)"/>
+      <remap from="rgb/camera_info" to="$(arg camera_info_topic)"/>
+
+      <!-- RTAB-Map Output -->
+      <remap from="grid_map" to="/map"/>
+      <remap from="odom" to ="/state_estimation"/>
+      <remap from="cloud_map" to="/registered_scan"/>
+
+
+      <!-- Rate (Hz) at which new nodes are added to map -->
+      <param name="Rtabmap/DetectionRate" type="string" value="1"/>
+
+      <!-- 2D SLAM -->
+      <param name="Reg/Force3DoF" type="string" value="true"/>
+
+      <!-- Loop Closure Detection -->
+      <!-- 0=SURF 1=SIFT 2=ORB 3=FAST/FREAK 4=FAST/BRIEF 5=GFTT/FREAK 6=GFTT/BRIEF 7=BRISK 8=GFTT/ORB 9=KAZE -->
+      <param name="Kp/DetectorStrategy" type="string" value="0"/>
+
+      <!-- Maximum visual words per image (bag-of-words) -->
+      <param name="Kp/MaxFeatures" type="string" value="400"/>
+
+      <!-- Used to extract more or less SURF features -->
+      <param name="SURF/HessianThreshold" type="string" value="100"/>
+
+      <!-- Loop Closure Constraint -->
+      <!-- 0=Visual, 1=ICP (1 requires scan)-->
+      <param name="Reg/Strategy" type="string" value="0"/>
+
+      <!-- Minimum visual inliers to accept loop closure -->
+      <param name="Vis/MinInliers" type="string" value="15"/>
+
+      <!-- Set to false to avoid saving data when robot is not moving -->
+      <param name="Mem/NotLinkedNodesKept" type="string" value="false"/>
+    </node>
+
+  </group>
+
+</launch>
