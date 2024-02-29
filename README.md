@@ -1,0 +1,1 @@
+Modified from CMU's ground_based_autonomy_basic https://github.com/jizhang-cmu/ground_based_autonomy_basic and autonomous_exploration_development_environment https://github.com/HongbiaoZ/autonomous_exploration_development_environment
