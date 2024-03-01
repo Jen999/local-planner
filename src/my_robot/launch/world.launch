@@ -48,7 +48,7 @@
 
 
   <!--launch rviz-->
-  <node name="rviz" pkg="rviz" type="rviz" respawn="false"/>
+  <!-- <node name="rviz" pkg="rviz" type="rviz" respawn="false"/> -->
 
   <!-- Local Planner -->
   <include file="$(find local_planner)/launch/local_planner.launch" >
@@ -99,7 +99,6 @@
       <!-- RTAB-Map Output -->
       <remap from="grid_map" to="/map"/>
       <remap from="odom" to ="/state_estimation"/>
-      <remap from="cloud_map" to="/registered_scan"/>
 
 
       <!-- Rate (Hz) at which new nodes are added to map -->

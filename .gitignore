@@ -3,5 +3,5 @@ output.db
 
 devel/
 build/
-src/local_planner/src/vehicle_simulator/mesh/garage/preview/pointcloud.ply
+src/vehicle_simulator/mesh/garage/preview/pointcloud.ply
 src/vehicle_simulator/mesh/campus/meshes/campus.dae

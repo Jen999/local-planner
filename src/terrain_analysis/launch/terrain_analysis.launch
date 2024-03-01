@@ -27,8 +27,8 @@
     <param name="minRelZ" type="double" value="-2.5" />
     <param name="maxRelZ" type="double" value="1.0" />
     <param name="disRatioZ" type="double" value="0.2" />
-    <remap from="/state_estimation" to="/odom"/>
-    <remap from="/registered_scan" to="/velodyne_points"/>
+    <!-- <remap from="/state_estimation" to="/odom"/>
+    <remap from="/registered_scan" to="/velodyne_points"/> -->
   </node>
 
 </launch>

@@ -675,8 +675,8 @@ int main(int argc, char** argv)
                 + (addedObstacles->points[i].y - vehicleY) * sinVehicleYaw);
         point.y = (-(addedObstacles->points[i].x - vehicleX) * sinVehicleYaw 
                 + (addedObstacles->points[i].y - vehicleY) * cosVehicleYaw);
-        point.z = addedObstacles->points[i].z;
-        point.intensity = addedObstacles->points[i].intensity;
+        point.z = addedObstacles->points[i].z;        
+        point.intensity = boundaryCloud->points[i].intensity;
 
         float dis = sqrt(point.x * point.x + point.y * point.y);
         if (dis < adjacentRange) {
