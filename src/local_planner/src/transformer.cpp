@@ -95,3 +95,10 @@ void TfRemap::velodyneHandler(const sensor_msgs::PointCloud2::ConstPtr& velo) {
 
     pubRegisteredScan.publish(registeredScan);
 }
+
+// Errors to fix:
+// [ERROR] [1709715790.627878738, 238.167000000]: Client [/gazebo] wants topic /cmd_vel to have datatype/md5sum [geometry_msgs/Twist/9f195f881246fdfa2798d1d3eebca84a], but our version has [geometry_msgs/TwistStamped/98d34b0043a2093cf9d9345ab6eef12e]. Dropping connection.
+// OptimizerG2O.cpp:1214::optimize() Computing marginals: vertex 44 has negative hessian index (-1). Cannot compute last pose covariance.
+// Rtabmap.cpp:2862::process() Rejected loop closure 104 -> 128: Not enough features in images (old=0, new=33, min=15)
+
+

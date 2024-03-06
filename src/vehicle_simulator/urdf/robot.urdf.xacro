@@ -187,7 +187,7 @@
 
   // Lidar Joint
   <joint name="lidar_joint" type="fixed">
-    <origin xyz="0.15 0.0 0.1" rpy="0.0 0.0 0.0"/>
+    <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
     <parent link="chassis"/>
     <child link="lidar"/>
     <axis xyz="0.0 1 0.0"/>
