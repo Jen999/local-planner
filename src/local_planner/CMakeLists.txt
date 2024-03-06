@@ -11,7 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   sensor_msgs
+  nav_msgs
   pcl_ros
+  tf2
+  tf2_ros
+  # tf2_geometry_msgs
 )
 
 find_package(PCL REQUIRED)
@@ -25,7 +29,11 @@ catkin_package(
   roscpp
   std_msgs
   sensor_msgs
+  nav_msgs
   pcl_ros
+  tf2
+  tf2_ros
+  # tf2_geometry_msgs
 )
 
 ###########
@@ -40,18 +48,19 @@ include_directories(
   "${PROJECT_SOURCE_DIR}/include"
   /usr/local/include # Location when using 'make system_install'
   /usr/include       # More usual location (e.g. when installing using a package)
+  # /opt/ros/melodic/share/tf2_geometry_msgs
 )
 
 ## Specify additional locations for library files
-link_directories(
-  /usr/local/lib # Location when using 'make system_install'
-  /usr/lib       # More usual location (e.g. when installing using a package)
-)
+# link_directories(
+#   /usr/local/lib # Location when using 'make system_install'
+#   /usr/lib       # More usual location (e.g. when installing using a package)
+# )
 
 ## Declare executables
 add_executable(localPlanner src/localPlanner.cpp)
 add_executable(pathFollower src/pathFollower.cpp)
-add_executable(transformer src/transformer.cpp)
+add_executable(transformer src/transformer.cpp src/main.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localPlanner ${catkin_LIBRARIES} ${PCL_LIBRARIES})

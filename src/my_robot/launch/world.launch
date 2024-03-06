@@ -63,7 +63,7 @@
     <arg name="checkTerrainConn" value="$(arg checkTerrainConn)"/>
   </include>
 
-  <include file="$(find vehicle_simulator)/launch/vehicle_simulator.launch" >
+  <!-- <include file="$(find vehicle_simulator)/launch/vehicle_simulator.launch" >
     <arg name="world_name" value="$(arg world_file)"/>
     <arg name="vehicleHeight" value="$(arg vehicleHeight)"/>
     <arg name="cameraOffsetZ" value="$(arg cameraOffsetZ)"/>
@@ -72,7 +72,7 @@
     <arg name="terrainZ" value="$(arg z)"/>
     <arg name="vehicleYaw" value="$(arg vehicleYaw)"/>
     <arg name="gui" value="$(arg gazebo_gui)"/>
-  </include>
+  </include> -->
 
   <include file="$(find sensor_scan_generation)/launch/sensor_scan_generation.launch" />
   
@@ -86,9 +86,11 @@
       <param name="database_path"       type="string" value="$(arg database_path)"/>
       <param name="frame_id"            type="string" value="robot_footprint"/>
       <param name="odom_frame_id"       type="string" value="odom"/>
+      <param name="map_frame_id" type="string"  value="map"/>
       <param name="subscribe_depth"     type="bool"   value="false"/>
       <param name="subscribe_scan_cloud"  type="bool" value="true"/>
       <param name="approx_sync" type="bool" value="true"/>
+      <param name="publish_tf" type="bool"  value="true"/>
 
       <!-- RTAB-Map Inputs -->
       <remap from="scan_cloud" to="/velodyne_points"/>
@@ -98,7 +100,7 @@
 
       <!-- RTAB-Map Output -->
       <remap from="grid_map" to="/map"/>
-      <remap from="odom" to ="/state_estimation"/>
+      <remap from="odom" to ="/odom"/>
 
 
       <!-- Rate (Hz) at which new nodes are added to map -->
@@ -115,7 +117,7 @@
       <param name="Kp/MaxFeatures" type="string" value="400"/>
 
       <!-- Used to extract more or less SURF features -->
-      <param name="SURF/HessianThreshold" type="string" value="100"/>
+      <!-- <param name="SURF/HessianThreshold" type="string" value="100"/> -->
 
       <!-- Loop Closure Constraint -->
       <!-- 0=Visual, 1=ICP (1 requires scan)-->

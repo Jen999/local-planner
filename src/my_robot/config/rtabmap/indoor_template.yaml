@@ -35,11 +35,11 @@ rtabmap:
   RGBD/LinearUpdate: 0.1             # Min magnitude before rtabmap update (Linear)
   RGBD/OptimizeFromGraphEnd: false   # FALSE: on loop closures the graph will be optimized from the first pose in the map
   RGBD/ProximityPathMaxNeighbors: 10 # Use 10 if Reg/Strategy is using ICP
-  Grid/FromDepth: false              # FALSE: the occupancy grid is created from the laser scans (rather than RGBD Cam's pointcloud)
+  Grid/Sensor: false                  # Initially Grid/FromDepth, FALSE: the occupancy grid is created from the laser scans (rather than RGBD Cam's pointcloud)
   Reg/Force3DoF: false                # roll, pitch and z won't be estimated.
   Reg/Strategy: 1                    # 0=Visual, 1=ICP, 2=Visual+ICP
   Mem/NotLinkedNodesKept: true       # Keep not linked nodes in db (rehearsed nodes and deleted nodes).
-  RGBD/SavedLocalizationIgnored: true # Don't always initialize at last location of previous session
+  RGBD/StartAtOrigin: true            # Initially RGBD/SavedLocalizationIgnored, Don't always initialize at last location of previous session
 
   # Graph Optimizer (during loop closure)
   Optimizer/Strategy: 2              # 0=TORO, 1=g2o, 2=GTSAM and 3=Ceres
@@ -62,14 +62,14 @@ rtabmap:
   Icp/MaxTranslation: 0.5            # (DEFAULT: 0.2)  Maximum ICP translation correction accepted (m)
   Icp/MaxRotation: 2                 # (DEFAULT: 0.78) Maximum ICP rotation correction accepted (rad)
   Icp/Iterations: 30                 # (DEFAULT: 30)   Number of iterations ICP will attempt to converge to solution
-  Icp/PM: true                       # (DEFAULT: true) Use libpointmatcher for ICP registration instead of PCL's implementation
-  Icp/PMOutlierRatio: 0.6            # (DEFAULT: 0.95) TrimmedDistOutlierFilter/ratio
+  Icp/Strategy: true                 # Initially Icp/PM, (DEFAULT: true) Use libpointmatcher for ICP registration instead of PCL's implementation
+  Icp/OutlierRatio: 0.6              # Initially Icp/PMOutlierRatio, (DEFAULT: 0.95) TrimmedDistOutlierFilter/ratio
   Icp/PMMatcherKnn: 3                # (DEFAULT: 1)    Number of nearest neighbors to consider it the reference
   Icp/PMMatcherEpsilon: 1            # (DEFAULT: 0.0)  Approximation to use for the nearest-neighbor search
   Icp/CorrespondenceRatio: 0.1       # (DEFAULT: 0.1)  Ratio of matching correspondences to accept the transform
   Icp/Epsilon: 0.00001               # (DEFAULT: 0.00001) Set the transformation epsilon (maximum allowable difference between two consecutive transformations) in order for an optimization to be considered as having converged to the final solution
   Icp/PointToPlaneK: 5               # (DEFALT: TRUE)  Use point to plane ICP
-  Icp/PointToPlaneRadius: 1.0        # (DEFAULT: 1.0)  Search radius to compute normals for point to plane if the cloud doesn't have already normals
+  Icp/PointToPlaneRadius: 0.0        # (DEFAULT: 1.0)  Search radius to compute normals for point to plane if the cloud doesn't have already normals
 
   # Not sure if needed
   Odom/ScanKeyFrameThr: 0.8          # (DEFAULT: 0.9)  Create a new keyframe when the number of ICP inliers drops under this ratio of points in last frame's scan

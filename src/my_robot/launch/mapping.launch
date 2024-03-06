@@ -42,7 +42,7 @@
       <param name="Kp/MaxFeatures" type="string" value="400"/>
 
       <!-- Used to extract more or less SURF features -->
-      <param name="SURF/HessianThreshold" type="string" value="100"/>
+      <!-- <param name="SURF/HessianThreshold" type="string" value="100"/> -->
 
       <!-- Loop Closure Constraint -->
       <!-- 0=Visual, 1=ICP (1 requires scan)-->

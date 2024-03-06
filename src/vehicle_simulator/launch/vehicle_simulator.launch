@@ -32,7 +32,7 @@
   <arg name="world_name" default="garage"/>
   <arg name="verbose" default="false"/>
 
-  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" >
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
     <arg name="gui" value="$(arg gui)"/>
@@ -40,11 +40,11 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="verbose" value="$(arg verbose)"/>
     <arg name="world_name" value="$(find vehicle_simulator)/world/$(arg world_name).world"/>
-  </include> -->
+  </include>
 
-  <!-- <include file="$(find my_robot)/launch/robot_description.launch"/> -->
+  <include file="$(find my_robot)/launch/robot_description.launch"/>
 
-  <!-- <node pkg="vehicle_simulator" type="vehicleSimulator" name="vehicleSimulator" output="screen" required="true">
+  <node pkg="vehicle_simulator" type="vehicleSimulator" name="vehicleSimulator" output="screen" required="true">
     <param name="use_gazebo_time" type="bool" value="false" />
     <param name="sensorOffsetX" value="$(arg sensorOffsetX)" />
     <param name="sensorOffsetY" value="$(arg sensorOffsetY)" />
@@ -67,7 +67,7 @@
     <param name="smoothRateIncl" value="$(arg smoothRateIncl)" />
     <param name="InclFittingThre" value="$(arg InclFittingThre)" />
     <param name="maxIncl" value="$(arg maxIncl)" />
-  </node> -->
+  </node>
 
 </launch>
 
