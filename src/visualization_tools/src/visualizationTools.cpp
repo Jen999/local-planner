@@ -30,20 +30,20 @@ const double PI = 3.1415926;
 
 string metricFile;
 string trajFile;
-string mapFile;
-double overallMapVoxelSize = 0.5;
+// string mapFile;
+// double overallMapVoxelSize = 0.5;
 double exploredAreaVoxelSize = 0.3;
 double exploredVolumeVoxelSize = 0.5;
 double transInterval = 0.2;
 double yawInterval = 10.0;
-int overallMapDisplayInterval = 2;
-int overallMapDisplayCount = 0;
+// int overallMapDisplayInterval = 2;
+// int overallMapDisplayCount = 0;
 int exploredAreaDisplayInterval = 1;
 int exploredAreaDisplayCount = 0;
 
 pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloud(new pcl::PointCloud<pcl::PointXYZI>());
-pcl::PointCloud<pcl::PointXYZ>::Ptr overallMapCloud(new pcl::PointCloud<pcl::PointXYZ>());
-pcl::PointCloud<pcl::PointXYZ>::Ptr overallMapCloudDwz(new pcl::PointCloud<pcl::PointXYZ>());
+// pcl::PointCloud<pcl::PointXYZ>::Ptr overallMapCloud(new pcl::PointCloud<pcl::PointXYZ>());
+// pcl::PointCloud<pcl::PointXYZ>::Ptr overallMapCloudDwz(new pcl::PointCloud<pcl::PointXYZ>());
 pcl::PointCloud<pcl::PointXYZI>::Ptr exploredAreaCloud(new pcl::PointCloud<pcl::PointXYZI>());
 pcl::PointCloud<pcl::PointXYZI>::Ptr exploredAreaCloud2(new pcl::PointCloud<pcl::PointXYZI>());
 pcl::PointCloud<pcl::PointXYZI>::Ptr exploredVolumeCloud(new pcl::PointCloud<pcl::PointXYZI>());
@@ -61,11 +61,11 @@ float vehicleYaw = 0;
 float vehicleX = 0, vehicleY = 0, vehicleZ = 0;
 float exploredVolume = 0, travelingDis = 0, runtime = 0, timeDuration = 0;
 
-pcl::VoxelGrid<pcl::PointXYZ> overallMapDwzFilter;
+// pcl::VoxelGrid<pcl::PointXYZ> overallMapDwzFilter;
 pcl::VoxelGrid<pcl::PointXYZI> exploredAreaDwzFilter;
 pcl::VoxelGrid<pcl::PointXYZI> exploredVolumeDwzFilter;
 
-sensor_msgs::PointCloud2 overallMap2;
+// sensor_msgs::PointCloud2 overallMap2;
 
 ros::Publisher *pubExploredAreaPtr = NULL;
 ros::Publisher *pubTrajectoryPtr = NULL;
@@ -215,13 +215,13 @@ int main(int argc, char** argv)
 
   nhPrivate.getParam("metricFile", metricFile);
   nhPrivate.getParam("trajFile", trajFile);
-  nhPrivate.getParam("mapFile", mapFile);
-  nhPrivate.getParam("overallMapVoxelSize", overallMapVoxelSize);
+  // nhPrivate.getParam("mapFile", mapFile);
+  // nhPrivate.getParam("overallMapVoxelSize", overallMapVoxelSize);
   nhPrivate.getParam("exploredAreaVoxelSize", exploredAreaVoxelSize);
   nhPrivate.getParam("exploredVolumeVoxelSize", exploredVolumeVoxelSize);
   nhPrivate.getParam("transInterval", transInterval);
   nhPrivate.getParam("yawInterval", yawInterval);
-  nhPrivate.getParam("overallMapDisplayInterval", overallMapDisplayInterval);
+  // nhPrivate.getParam("overallMapDisplayInterval", overallMapDisplayInterval);
   nhPrivate.getParam("exploredAreaDisplayInterval", exploredAreaDisplayInterval);
 
   ros::Subscriber subOdometry = nh.subscribe<nav_msgs::Odometry> ("/state_estimation", 5, odometryHandler);
@@ -230,7 +230,7 @@ int main(int argc, char** argv)
 
   ros::Subscriber subRuntime = nh.subscribe<std_msgs::Float32> ("/runtime", 5, runtimeHandler);
 
-  ros::Publisher pubOverallMap = nh.advertise<sensor_msgs::PointCloud2> ("/overall_map", 5);
+  // ros::Publisher pubOverallMap = nh.advertise<sensor_msgs::PointCloud2> ("/overall_map", 5);
 
   ros::Publisher pubExploredArea = nh.advertise<sensor_msgs::PointCloud2> ("/explored_areas", 5);
   pubExploredAreaPtr = &pubExploredArea;
@@ -249,21 +249,21 @@ int main(int argc, char** argv)
 
   //ros::Publisher pubRuntime = nh.advertise<std_msgs::Float32> ("/runtime", 5);
 
-  overallMapDwzFilter.setLeafSize(overallMapVoxelSize, overallMapVoxelSize, overallMapVoxelSize);
+  // overallMapDwzFilter.setLeafSize(overallMapVoxelSize, overallMapVoxelSize, overallMapVoxelSize);
   exploredAreaDwzFilter.setLeafSize(exploredAreaVoxelSize, exploredAreaVoxelSize, exploredAreaVoxelSize);
   exploredVolumeDwzFilter.setLeafSize(exploredVolumeVoxelSize, exploredVolumeVoxelSize, exploredVolumeVoxelSize);
 
-  pcl::PLYReader ply_reader;
-  if (ply_reader.read(mapFile, *overallMapCloud) == -1) {
-    printf("\nCouldn't read pointcloud.ply file.\n\n");
-  }
+  // pcl::PLYReader ply_reader;
+  // if (ply_reader.read(mapFile, *overallMapCloud) == -1) {
+  //   printf("\nCouldn't read pointcloud.ply file.\n\n");
+  // }
 
-  overallMapCloudDwz->clear();
-  overallMapDwzFilter.setInputCloud(overallMapCloud);
-  overallMapDwzFilter.filter(*overallMapCloudDwz);
-  overallMapCloud->clear();
+  // overallMapCloudDwz->clear();
+  // overallMapDwzFilter.setInputCloud(overallMapCloud);
+  // overallMapDwzFilter.filter(*overallMapCloudDwz);
+  // overallMapCloud->clear();
 
-  pcl::toROSMsg(*overallMapCloudDwz, overallMap2);
+  // pcl::toROSMsg(*overallMapCloudDwz, overallMap2);
 
   time_t logTime = time(0);
   tm *ltm = localtime(&logTime);
@@ -280,14 +280,14 @@ int main(int argc, char** argv)
   while (status) {
     ros::spinOnce();
 
-    overallMapDisplayCount++;
-    if (overallMapDisplayCount >= 100 * overallMapDisplayInterval) {
-      overallMap2.header.stamp = ros::Time().fromSec(systemTime);
-      overallMap2.header.frame_id = "map";
-      pubOverallMap.publish(overallMap2);
+  //   overallMapDisplayCount++;
+  //   if (overallMapDisplayCount >= 100 * overallMapDisplayInterval) {
+  //     overallMap2.header.stamp = ros::Time().fromSec(systemTime);
+  //     overallMap2.header.frame_id = "map";
+  //     pubOverallMap.publish(overallMap2);
 
-      overallMapDisplayCount = 0;
-    }
+  //     overallMapDisplayCount = 0;
+  //   }
 
     status = ros::ok();
     rate.sleep();
@@ -296,7 +296,7 @@ int main(int argc, char** argv)
   fclose(metricFilePtr);
   fclose(trajFilePtr);
 
-  printf("\nExploration metrics and vehicle trajectory are saved in 'src/vehicle_simulator/log'.\n\n");
+  printf("\nExploration metrics and vehicle trajectory are saved in 'src/local_planner/log'.\n\n");
 
   return 0;
 }

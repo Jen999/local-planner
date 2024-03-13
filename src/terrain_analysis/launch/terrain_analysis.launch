@@ -4,7 +4,7 @@
     <param name="scanVoxelSize" type="double" value="0.05" />
     <param name="decayTime" type="double" value="2.0" />
     <param name="noDecayDis" type="double" value="4.0" />
-    <param name="clearingDis" type="double" value="8.0" />
+    <param name="clearingDis" type="double" value="5.0" />
     <param name="useSorting" type="bool" value="false" />
     <param name="quantileZ" type="double" value="0.25" />
     <param name="considerDrop" type="bool" value="true" />
@@ -21,14 +21,12 @@
     <param name="noDataObstacle" type="bool" value="false" />
     <param name="noDataBlockSkipNum" type="int" value="0" />
     <param name="minBlockPointNum" type="int" value="10" />
-    <param name="vehicleHeight" type="double" value="1.5" />
-    <param name="voxelPointUpdateThre" type="int" value="100" />
+    <param name="vehicleHeight" type="double" value="0.5" />
+    <param name="voxelPointUpdateThre" type="int" value="10" />
     <param name="voxelTimeUpdateThre" type="double" value="2.0" />
     <param name="minRelZ" type="double" value="-2.5" />
     <param name="maxRelZ" type="double" value="1.0" />
     <param name="disRatioZ" type="double" value="0.2" />
-    <!-- <remap from="/state_estimation" to="/odom"/>
-    <remap from="/registered_scan" to="/velodyne_points"/> -->
   </node>
 
 </launch>
